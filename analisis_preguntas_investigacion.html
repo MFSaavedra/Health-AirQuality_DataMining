@@ -7802,8 +7802,10 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Calidad-del-Aire-y-Salud-Respiratoria-%E2%80%94-An%C3%A1lisis-por-Preguntas-de-Investigaci%C3%B3n">Calidad del Aire y Salud Respiratoria — Análisis por Preguntas de Investigación<a class="anchor-link" href="#Calidad-del-Aire-y-Salud-Respiratoria-%E2%80%94-An%C3%A1lisis-por-Preguntas-de-Investigaci%C3%B3n">¶</a></h1><h2 id="Regi%C3%B3n-Metropolitana-de-Chile,-2020%E2%80%932024">Región Metropolitana de Chile, 2020–2024<a class="anchor-link" href="#Regi%C3%B3n-Metropolitana-de-Chile,-2020%E2%80%932024">¶</a></h2><p>Este notebook integra el EDA respiratorio y el análisis estadístico/ML en un flujo único estructurado en torno a las seis preguntas de investigación del proyecto.</p>
-<table>
+<h1 id="Calidad-del-Aire-y-Salud-Respiratoria">Calidad del Aire y Salud Respiratoria<a class="anchor-link" href="#Calidad-del-Aire-y-Salud-Respiratoria">¶</a></h1><h2 id="Regi%C3%B3n-Metropolitana-de-Chile,-2020%E2%80%932024">Región Metropolitana de Chile, 2020–2024<a class="anchor-link" href="#Regi%C3%B3n-Metropolitana-de-Chile,-2020%E2%80%932024">¶</a></h2><h3 id="Grupo-5">Grupo 5<a class="anchor-link" href="#Grupo-5">¶</a></h3><hr/>
+<h2 id="1.-Introducci%C3%B3n">1. Introducción<a class="anchor-link" href="#1.-Introducci%C3%B3n">¶</a></h2><p>Este notebook integra el EDA respiratorio y el análisis estadístico/ML en un flujo único, estructurado en torno a las seis preguntas de investigación del proyecto. Combina series temporales, análisis de correlación, técnicas supervisadas y no supervisadas, y diseños cuasi-experimentales para obtener una visión integral de la relación entre contaminación atmosférica y salud respiratoria en la Región Metropolitana.</p>
+<hr/>
+<h2 id="2.-Preguntas-de-Investigaci%C3%B3n">2. Preguntas de Investigación<a class="anchor-link" href="#2.-Preguntas-de-Investigaci%C3%B3n">¶</a></h2><table>
 <thead>
 <tr>
 <th>#</th>
@@ -7844,6 +7846,45 @@ a.anchor-link {
 </tr>
 </tbody>
 </table>
+<hr/>
+<h2 id="3.-Datos">3. Datos<a class="anchor-link" href="#3.-Datos">¶</a></h2><h3 id="3.1-Fuentes-de-datos">3.1 Fuentes de datos<a class="anchor-link" href="#3.1-Fuentes-de-datos">¶</a></h3><p><strong>Calidad del aire</strong> — <a href="https://github.com/MinCiencia/Datos-CambioClimatico">MinCiencia / Datos-CambioClimatico</a></p>
+<ul>
+<li>Contaminantes: PM10, PM2.5, NO₂, O₃, SO₂</li>
+<li>Archivos: <code>data/Datos-CambioClimatico/output/{contaminante}/{año}/{año}_{contaminante}_sinca.csv</code> (uno por contaminante por año, 2020–2024)</li>
+<li>Filtro espacial: bounding box RM (lat −34° a −33°, lon −71.1° a −70°)</li>
+<li>Caché: <code>data/Datos-CambioClimatico/air_santiago_2020_2024.parquet</code></li>
+</ul>
+<p><strong>Atenciones de urgencia</strong> — <a href="https://deis.minsal.cl/#datosabiertos">DEIS/MINSAL</a></p>
+<ul>
+<li>Archivos: <code>data/urgencias/AtencionesUrgencia{año}.csv</code> para 2020–2024 (~6 GB en total)</li>
+<li>Filtro RM: los archivos 2020–2022 no incluyen <code>NombreRegion</code>; se derivan los IDs de establecimientos RM desde el archivo 2023 y se aplican a todos los años</li>
+<li>Columnas retenidas: <code>IdEstablecimiento, NEstablecimiento, GlosaCausa, Total, Menores_1, De_1_a_4, De_5_a_14, De_15_a_64, De_65_y_mas, fecha, semana, GLOSATIPOESTABLECIMIENTO, NombreRegion</code></li>
+<li>Caché: <code>data/urgencias/urgencia_2020_2024.parquet</code></li>
+</ul>
+<p><strong>Estadísticas hospitalarias</strong> — <a href="https://deis.minsal.cl/#datosabiertos">DEIS/MINSAL</a></p>
+<ul>
+<li>Archivo consolidado (2020–2023): <code>data/estadisticas_hospitalarias/Consolidado Estadísticas Hospitalarias 2014-2023.xlsx</code> (una hoja por año, encabezado en fila 2)</li>
+<li>Archivo 2024: <code>data/estadisticas_hospitalarias/Estadísticas Hospitalarias Año 2024.xlsx</code> (hoja "Año 2024")</li>
+<li>Filtro RM: columna <code>Nombre SS/SEREMI</code> comienza con <code>"Metropolitano"</code> y <code>Cód. Nivel Cuidado ≠ 0</code></li>
+<li>Caché: <code>data/estadisticas_hospitalarias/hospitalaria_2020_2024.parquet</code></li>
+</ul>
+<p><strong>Defunciones</strong> — <a href="https://deis.minsal.cl/#datosabiertos">DEIS/MINSAL</a></p>
+<ul>
+<li>Archivo histórico: <code>data/defunciones/DEFUNCIONES_FUENTE_DEIS_1990_2022_CIFRAS_OFICIALES.csv</code> (794 MB; se filtran años 2020–2022)</li>
+<li>Archivo reciente: <code>data/defunciones/DEFUNCIONES_FUENTE_DEIS_2023_2026_31032026.csv</code> (117 MB; se filtran años 2023–2024)</li>
+<li>Caché: <code>data/defunciones/defunciones_2020_2024.parquet</code></li>
+</ul>
+<p><strong>Catálogo de establecimientos</strong> — MINSAL REAS</p>
+<ul>
+<li>Archivo: <code>data/establecimientos_20260428.csv</code> (1 069 establecimientos RM con coordenadas georreferenciadas)</li>
+<li>Usado para análisis espacial: join KDTree al establecimiento de urgencia más cercano a cada estación de monitoreo</li>
+<li>No se cachea (archivo pequeño, carga instantánea)</li>
+</ul>
+<h3 id="3.2-Preprocesamiento">3.2 Preprocesamiento<a class="anchor-link" href="#3.2-Preprocesamiento">¶</a></h3><ul>
+<li>Todos los datasets se cargan desde caché Parquet vía <code>%run exploration_optimized.ipynb</code></li>
+<li>Filtro a causas respiratorias por <code>GlosaCausa</code> (regex: <code>RESPIRAT|IRA Alta|BRONQUIT|INFLUENZA|NEUMON|ASMA|EPOC</code>)</li>
+<li>Agregación diaria/semanal; construcción de series alineadas por (año, semana ISO)</li>
+</ul>
 <hr/>
 </div>
 </div>
@@ -7925,7 +7966,14 @@ POLLUTANTS     : ['mpm10', 'mpm25', 'no2', 'o3', 'so2']
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P1-%C2%B7-%C2%BFExiste-una-asociaci%C3%B3n-significativa-entre-los-niveles-diarios-de-contaminantes-y-las-atenciones-de-urgencia-respiratoria?">P1 · ¿Existe una asociación significativa entre los niveles diarios de contaminantes y las atenciones de urgencia respiratoria?<a class="anchor-link" href="#P1-%C2%B7-%C2%BFExiste-una-asociaci%C3%B3n-significativa-entre-los-niveles-diarios-de-contaminantes-y-las-atenciones-de-urgencia-respiratoria?">¶</a></h2><p><strong>Estrategia:</strong> Primero describimos la dinámica temporal de las urgencias respiratorias (series diaria, semanal, por causa, por edad). Luego verificamos normalidad para justificar pruebas no paramétricas, ejecutamos Kruskal-Wallis estacional y calculamos correlaciones de Spearman entre contaminantes y urgencias semanales.</p>
+<h2 id="4.-P1-%E2%80%94-Asociaci%C3%B3n-Contaminantes%E2%80%93Urgencias">4. P1 — Asociación Contaminantes–Urgencias<a class="anchor-link" href="#4.-P1-%E2%80%94-Asociaci%C3%B3n-Contaminantes%E2%80%93Urgencias">¶</a></h2><p><strong>Pregunta:</strong> ¿Existe una asociación significativa entre los niveles diarios de contaminantes atmosféricos (PM2.5, PM10, NO₂, O₃, SO₂) y las atenciones de urgencia por enfermedades respiratorias en la Región Metropolitana?</p>
+<h3 id="4.1-Estrategia">4.1 Estrategia<a class="anchor-link" href="#4.1-Estrategia">¶</a></h3><ul>
+<li>Series de tiempo diaria y semanal del total respiratorio (2020–2024)</li>
+<li>Desagregación por tipo de causa y por rango etario</li>
+<li>Test de normalidad (Shapiro-Wilk, Kolmogorov-Smirnov) → justifica pruebas no paramétricas</li>
+<li>Kruskal-Wallis estacional sobre contaminantes y urgencias</li>
+<li>Correlación de Spearman: cada contaminante vs urgencias semanales alineadas</li>
+</ul>
 </div>
 </div>
 </div>
@@ -8326,7 +8374,13 @@ SO2      | +0.1576       | 1.0787e-02     | *
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P2-%C2%B7-%C2%BFQu%C3%A9-contaminantes-presentan-el-mayor-impacto-relativo,-considerando-efectos-no-lineales-e-interacciones?">P2 · ¿Qué contaminantes presentan el mayor impacto relativo, considerando efectos no lineales e interacciones?<a class="anchor-link" href="#P2-%C2%B7-%C2%BFQu%C3%A9-contaminantes-presentan-el-mayor-impacto-relativo,-considerando-efectos-no-lineales-e-interacciones?">¶</a></h2><p><strong>Estrategia:</strong> Categorías de riesgo OMS para PM10/PM2.5 → Mutual Information (captura no-linealidades) → correlaciones Spearman entre contaminantes (estructura de multicolinealidad) → PCA para identificar sistemas independientes de contaminación.</p>
+<h2 id="5.-P2-%E2%80%94-Impacto-Relativo-y-Efectos-No-Lineales">5. P2 — Impacto Relativo y Efectos No Lineales<a class="anchor-link" href="#5.-P2-%E2%80%94-Impacto-Relativo-y-Efectos-No-Lineales">¶</a></h2><p><strong>Pregunta:</strong> ¿Qué contaminantes presentan el mayor impacto relativo sobre las atenciones respiratorias, considerando efectos no lineales y posibles interacciones entre contaminantes?</p>
+<h3 id="5.1-Estrategia">5.1 Estrategia<a class="anchor-link" href="#5.1-Estrategia">¶</a></h3><ul>
+<li>Categorías de riesgo OMS (PM10, PM2.5) → distribución de niveles de exposición</li>
+<li><strong>Mutual Information</strong> sobre urgencias semanales → ranking no lineal de relevancia</li>
+<li>Correlación Spearman entre contaminantes → estructura de multicolinealidad</li>
+<li><strong>PCA</strong> sobre perfiles medios por estación → sistemas independientes de contaminación</li>
+</ul>
 </div>
 </div>
 </div>
@@ -8899,7 +8953,12 @@ Nota: con n &gt; 90,000 todos los p-valores tienen underflow a 0.0 — interpret
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P3-%C2%B7-%C2%BFExisten-efectos-rezagados-entre-exposici%C3%B3n-a-contaminaci%C3%B3n-y-eventos-de-salud,-y-cu%C3%A1l-es-la-ventana-temporal-de-mayor-impacto?">P3 · ¿Existen efectos rezagados entre exposición a contaminación y eventos de salud, y cuál es la ventana temporal de mayor impacto?<a class="anchor-link" href="#P3-%C2%B7-%C2%BFExisten-efectos-rezagados-entre-exposici%C3%B3n-a-contaminaci%C3%B3n-y-eventos-de-salud,-y-cu%C3%A1l-es-la-ventana-temporal-de-mayor-impacto?">¶</a></h2><p><strong>Estrategia:</strong> Calcular correlación cruzada de Spearman entre cada contaminante en la semana <code>t</code> y las urgencias respiratorias en <code>t</code>, <code>t+1</code>, <code>t+2</code>, <code>t+3</code>, <code>t+4</code>. El lag con máxima correlación indica la ventana de impacto óptima.</p>
+<h2 id="6.-P3-%E2%80%94-Efectos-Rezagados">6. P3 — Efectos Rezagados<a class="anchor-link" href="#6.-P3-%E2%80%94-Efectos-Rezagados">¶</a></h2><p><strong>Pregunta:</strong> ¿Existen efectos rezagados entre la exposición a contaminación atmosférica y los eventos de salud respiratoria, y cuál es la ventana temporal de mayor impacto?</p>
+<h3 id="6.1-Estrategia">6.1 Estrategia<a class="anchor-link" href="#6.1-Estrategia">¶</a></h3><ul>
+<li>Correlación cruzada de Spearman entre el contaminante en la semana <em>t</em> y las urgencias en <em>t</em>, <em>t+1</em>, ..., <em>t+4</em></li>
+<li>Heatmap de r por contaminante × lag y perfil de correlación cruzada</li>
+<li>Identificación del lag óptimo (máximo |r|) por contaminante</li>
+</ul>
 </div>
 </div>
 </div>
@@ -9060,7 +9119,13 @@ Nota: con n &gt; 90,000 todos los p-valores tienen underflow a 0.0 — interpret
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P4-%C2%B7-%C2%BFQu%C3%A9-patrones-espaciales-y-clusters-territoriales-de-riesgo-pueden-identificarse?">P4 · ¿Qué patrones espaciales y clusters territoriales de riesgo pueden identificarse?<a class="anchor-link" href="#P4-%C2%B7-%C2%BFQu%C3%A9-patrones-espaciales-y-clusters-territoriales-de-riesgo-pueden-identificarse?">¶</a></h2><p><strong>Estrategia:</strong> (a) Tasa respiratoria por establecimiento vs PM10 más cercano — ¿hay gradiente espacial?  (b) K-means sobre perfiles de causa por establecimiento para identificar grupos funcionales y verificar si se alinean con exposición a PM10.</p>
+<h2 id="7.-P4-%E2%80%94-Patrones-Espaciales-y-Clusters-Territoriales">7. P4 — Patrones Espaciales y Clusters Territoriales<a class="anchor-link" href="#7.-P4-%E2%80%94-Patrones-Espaciales-y-Clusters-Territoriales">¶</a></h2><p><strong>Pregunta:</strong> ¿Qué patrones espaciales y clusters territoriales de riesgo pueden identificarse en los establecimientos de la Región Metropolitana a partir de variables de contaminación y salud?</p>
+<h3 id="7.1-Estrategia">7.1 Estrategia<a class="anchor-link" href="#7.1-Estrategia">¶</a></h3><ul>
+<li>Tasa respiratoria por establecimiento vs PM10 de la estación más cercana (Spearman)</li>
+<li>PCA sobre perfiles normalizados de causa por establecimiento</li>
+<li><strong>K-means</strong> (k=4) sobre los primeros componentes PCA → clusters funcionales por perfil de enfermedad</li>
+<li>Verificación: ¿los clusters de enfermedad se alinean con diferencias en PM10? (Kruskal-Wallis)</li>
+</ul>
 </div>
 </div>
 </div>
@@ -9436,7 +9501,13 @@ Varianza PC1: 27.9%  PC1+2: 46.5%
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P5-%C2%B7-%C2%BFEs-posible-predecir-d%C3%ADas-de-alto-riesgo-sanitario-con-modelos-de-aprendizaje-autom%C3%A1tico?">P5 · ¿Es posible predecir días de alto riesgo sanitario con modelos de aprendizaje automático?<a class="anchor-link" href="#P5-%C2%B7-%C2%BFEs-posible-predecir-d%C3%ADas-de-alto-riesgo-sanitario-con-modelos-de-aprendizaje-autom%C3%A1tico?">¶</a></h2><p><strong>Estrategia:</strong> Variable objetivo binaria (semana de alta urgencia vs normal, corte en mediana). Features: promedios semanales de los 5 contaminantes. Modelos: Regresión Logística y Árbol de Decisión con GridSearchCV. Evaluación: F1 macro en validación cruzada 5-fold + test set.</p>
+<h2 id="8.-P5-%E2%80%94-Predicci%C3%B3n-de-D%C3%ADas-de-Alto-Riesgo-Sanitario">8. P5 — Predicción de Días de Alto Riesgo Sanitario<a class="anchor-link" href="#8.-P5-%E2%80%94-Predicci%C3%B3n-de-D%C3%ADas-de-Alto-Riesgo-Sanitario">¶</a></h2><p><strong>Pregunta:</strong> ¿Es posible predecir semanas de alto riesgo sanitario utilizando modelos de aprendizaje automático basados en contaminantes atmosféricos?</p>
+<h3 id="8.1-Estrategia">8.1 Estrategia<a class="anchor-link" href="#8.1-Estrategia">¶</a></h3><ul>
+<li>Variable objetivo binaria: semana sobre/bajo la mediana de urgencias respiratorias</li>
+<li>Features: promedios semanales de PM10, PM2.5, NO₂, O₃, SO₂</li>
+<li>Modelos: <strong>Regresión Logística</strong> y <strong>Árbol de Decisión</strong> con GridSearchCV</li>
+<li>Evaluación: F1 macro en validación cruzada 5-fold + conjunto de test (70/30)</li>
+</ul>
 </div>
 </div>
 </div>
@@ -9827,7 +9898,12 @@ CV F1 macro (5-fold): 0.703 ± 0.062
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="P6-%C2%B7-%C2%BFSe-observan-cambios-significativos-al-superar-umbrales-normativos?-(Efectos-causales-/-discontinuidades)">P6 · ¿Se observan cambios significativos al superar umbrales normativos? (Efectos causales / discontinuidades)<a class="anchor-link" href="#P6-%C2%B7-%C2%BFSe-observan-cambios-significativos-al-superar-umbrales-normativos?-(Efectos-causales-/-discontinuidades)">¶</a></h2><p><strong>Estrategia:</strong> (a) Definir episodios de contaminación según norma chilena ICA. (b) DiD: comparar urgencias en días de episodio vs días normales (Kruskal-Wallis). (c) Regression Discontinuity Design (RDD): ajustar rectas a cada lado del umbral y visualizar la discontinuidad.</p>
+<h2 id="9.-P6-%E2%80%94-Umbrales-Normativos-y-Efectos-Causales">9. P6 — Umbrales Normativos y Efectos Causales<a class="anchor-link" href="#9.-P6-%E2%80%94-Umbrales-Normativos-y-Efectos-Causales">¶</a></h2><p><strong>Pregunta:</strong> ¿Se observan cambios significativos en los eventos de salud respiratoria cuando los niveles de contaminación superan ciertos umbrales normativos, sugiriendo posibles efectos causales o discontinuidades?</p>
+<h3 id="9.1-Estrategia">9.1 Estrategia<a class="anchor-link" href="#9.1-Estrategia">¶</a></h3><ul>
+<li>Episodios según norma chilena ICA: PM10 &gt; 100 µg/m³, PM2.5 &gt; 37.5 µg/m³</li>
+<li><strong>DiD:</strong> urgencias en días de episodio vs días normales (Kruskal-Wallis)</li>
+<li><strong>RDD:</strong> ajuste lineal a cada lado del umbral → estimación del salto en urgencias</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -10034,12 +10110,11 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="Hallazgos-y-Conclusiones">Hallazgos y Conclusiones<a class="anchor-link" href="#Hallazgos-y-Conclusiones">¶</a></h2><h3 id="S%C3%ADntesis-de-resultados-por-pregunta-de-investigaci%C3%B3n">Síntesis de resultados por pregunta de investigación<a class="anchor-link" href="#S%C3%ADntesis-de-resultados-por-pregunta-de-investigaci%C3%B3n">¶</a></h3><hr/>
-<h4 id="P1-%C2%B7-Asociaci%C3%B3n-contaminantes%E2%80%93urgencias-respiratorias">P1 · Asociación contaminantes–urgencias respiratorias<a class="anchor-link" href="#P1-%C2%B7-Asociaci%C3%B3n-contaminantes%E2%80%93urgencias-respiratorias">¶</a></h4><p>Sobre 261 semanas alineadas (2020–2024), <strong>NO₂</strong> y <strong>SO₂</strong> son los únicos contaminantes con correlación de Spearman estadísticamente significativa con las urgencias respiratorias semanales (NO₂: r = +0.268, p &lt; 0.001; SO₂: r = +0.158, p &lt; 0.05). PM10, PM2.5 y O₃ no alcanzan significancia en ventana contemporánea (lag 0).</p>
-<p>La variación estacional es marcada: el test de Kruskal-Wallis sobre urgencias semanales arroja H = 110.59 (p = 8.18 × 10⁻²⁴), con el invierno concentrando los picos más altos. Los contaminantes también muestran diferencia estacional significativa (todos los KW p &lt; 0.05), lo que confirma la covariación estacional como motor principal de la asociación bruta.</p>
-<p><strong>Interpretación:</strong> La correlación positiva de NO₂ y SO₂ con urgencias refleja la co-estacionalidad (combustión en invierno + mayor carga respiratoria). Los demás contaminantes requieren examinar lags (→ P3).</p>
+<h2 id="10.-Hallazgos-y-Conclusiones">10. Hallazgos y Conclusiones<a class="anchor-link" href="#10.-Hallazgos-y-Conclusiones">¶</a></h2><h3 id="10.1-P1-%E2%80%94-Asociaci%C3%B3n-contaminantes%E2%80%93urgencias">10.1 P1 — Asociación contaminantes–urgencias<a class="anchor-link" href="#10.1-P1-%E2%80%94-Asociaci%C3%B3n-contaminantes%E2%80%93urgencias">¶</a></h3><p>Sobre 261 semanas alineadas (2020–2024), <strong>NO₂</strong> y <strong>SO₂</strong> son los únicos contaminantes con correlación de Spearman estadísticamente significativa con las urgencias respiratorias semanales (NO₂: r = +0.268, p &lt; 0.001; SO₂: r = +0.158, p &lt; 0.05). PM10, PM2.5 y O₃ no alcanzan significancia en ventana contemporánea (lag 0).</p>
+<p>La variación estacional es marcada: Kruskal-Wallis sobre urgencias semanales H = 110.59 (p = 8.18 × 10⁻²⁴), con el invierno concentrando los picos más altos. Los contaminantes también muestran diferencia estacional significativa (todos los KW p &lt; 0.05), confirmando la covariación estacional como motor principal de la asociación bruta.</p>
+<p><strong>Interpretación:</strong> La correlación positiva de NO₂ y SO₂ refleja la co-estacionalidad (combustión en invierno + mayor carga respiratoria). Los demás contaminantes requieren examinar lags (→ 10.3).</p>
 <hr/>
-<h4 id="P2-%C2%B7-Impacto-relativo-y-efectos-no-lineales">P2 · Impacto relativo y efectos no lineales<a class="anchor-link" href="#P2-%C2%B7-Impacto-relativo-y-efectos-no-lineales">¶</a></h4><p>La <strong>Mutual Information</strong> capta relaciones no lineales y ofrece un ranking distinto al Spearman contemporáneo:</p>
+<h3 id="10.2-P2-%E2%80%94-Impacto-relativo-y-efectos-no-lineales">10.2 P2 — Impacto relativo y efectos no lineales<a class="anchor-link" href="#10.2-P2-%E2%80%94-Impacto-relativo-y-efectos-no-lineales">¶</a></h3><p>La <strong>Mutual Information</strong> capta relaciones no lineales y ofrece un ranking distinto al Spearman contemporáneo:</p>
 <table>
 <thead>
 <tr>
@@ -10070,16 +10145,13 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 </tr>
 </tbody>
 </table>
-<p>O₃ lidera pese a tener correlación lineal negativa o nula (efecto no lineal / umbral). PM10 tiene el MI más bajo, consistente con su baja correlación directa.</p>
-<p>La correlación Spearman entre contaminantes revela <strong>alta multicolinealidad</strong>: PM10–PM2.5 r = 0.805, confirmando que representan la misma fuente (combustión y polvo particulado). No₂ se correlaciona moderadamente con PM10 (r ≈ 0.5–0.6), reflejando el origen vehicular común.</p>
-<p>El <strong>PCA</strong> sobre perfiles medios por estación descompone la varianza en dos sistemas independientes:</p>
+<p>O₃ lidera pese a tener correlación lineal negativa o nula (efecto no lineal / umbral). La correlación Spearman entre contaminantes revela <strong>alta multicolinealidad</strong>: PM10–PM2.5 r = 0.805. El <strong>PCA</strong> descompone la varianza inter-estación en dos sistemas independientes:</p>
 <ul>
-<li><strong>PC1</strong> (~45% varianza): carga positiva de PM10 + PM2.5 + NO₂ → <em>combustión/tráfico</em></li>
-<li><strong>PC2</strong> (~25% varianza): carga diferencial de SO₂ y O₃ → <em>industrial / fotoquímico</em></li>
+<li><strong>PC1</strong> (~45% varianza): PM10 + PM2.5 + NO₂ → <em>combustión/tráfico</em></li>
+<li><strong>PC2</strong> (~25% varianza): SO₂ + O₃ → <em>industrial / fotoquímico</em></li>
 </ul>
-<p>El 70% de la varianza inter-estación queda explicado por estos dos componentes.</p>
 <hr/>
-<h4 id="P3-%C2%B7-Efectos-rezagados-(an%C3%A1lisis-nuevo,-no-presente-en-otros-notebooks)">P3 · Efectos rezagados (análisis nuevo, no presente en otros notebooks)<a class="anchor-link" href="#P3-%C2%B7-Efectos-rezagados-(an%C3%A1lisis-nuevo,-no-presente-en-otros-notebooks)">¶</a></h4><p>La correlación cruzada con lags 0–4 semanas revela que <strong>todos los contaminantes mejoran o mantienen su correlación con el lag</strong>:</p>
+<h3 id="10.3-P3-%E2%80%94-Efectos-rezagados-(an%C3%A1lisis-nuevo)">10.3 P3 — Efectos rezagados <em>(análisis nuevo)</em><a class="anchor-link" href="#10.3-P3-%E2%80%94-Efectos-rezagados-(an%C3%A1lisis-nuevo)">¶</a></h3><p>La correlación cruzada con lags 0–4 semanas muestra que todos los contaminantes mejoran o mantienen su correlación con el lag:</p>
 <table>
 <thead>
 <tr>
@@ -10122,13 +10194,12 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 </tr>
 </tbody>
 </table>
-<p>El lag de <strong>2–3 semanas</strong> para partículas (PM10, PM2.5) es coherente con la fisiopatología: exposición → inflamación bronquial → consulta de urgencia. El NO₂ con lag 2w (r = +0.273, p &lt; 0.001) es el predictor rezagado más robusto. O₃ muestra correlación negativa o nula en todos los lags, reflejando su naturaleza fotoquímica estival (inversa a la estacionalidad de urgencias invernales).</p>
+<p>El lag de <strong>2–3 semanas</strong> para partículas es coherente con la fisiopatología: exposición → inflamación bronquial → consulta de urgencia. O₃ muestra correlación negativa en todos los lags, reflejando su naturaleza fotoquímica estival (inversa a la estacionalidad invernal de urgencias).</p>
 <hr/>
-<h4 id="P4-%C2%B7-Patrones-espaciales-y-clusters-territoriales">P4 · Patrones espaciales y clusters territoriales<a class="anchor-link" href="#P4-%C2%B7-Patrones-espaciales-y-clusters-territoriales">¶</a></h4><p>Con 148 establecimientos, la correlación Spearman entre el PM10 de la estación más cercana y la tasa respiratoria del establecimiento es <strong>no significativa</strong> (r = 0.073, p = 0.395). El análisis espacial no detecta un gradiente claro de exposición → tasa que atraviese todos los tipos de establecimiento.</p>
-<p>El K-means (k = 4) sobre perfiles normalizados de causa por establecimiento identifica 4 grupos funcionales. Sin embargo, el test de Kruskal-Wallis sobre PM10 medio entre clusters es también no significativo (H = 2.99, p = 0.394): <strong>los clusters de perfil de enfermedad no se alinean con diferencias en exposición a PM10</strong>.</p>
-<p><strong>Limitación importante:</strong> El análisis espacial usa la estación de monitoreo <em>más cercana</em> como proxy de exposición, lo que introduce error de medición sustancial. La ausencia de datos de nivel comunal (NombreComuna no disponible en el parquet) impide una granularidad territorial fina. Este resultado debe interpretarse con cautela y no como evidencia de ausencia de efecto espacial.</p>
+<h3 id="10.4-P4-%E2%80%94-Patrones-espaciales-y-clusters-territoriales">10.4 P4 — Patrones espaciales y clusters territoriales<a class="anchor-link" href="#10.4-P4-%E2%80%94-Patrones-espaciales-y-clusters-territoriales">¶</a></h3><p>Con 148 establecimientos, la correlación Spearman entre PM10 de la estación más cercana y la tasa respiratoria del establecimiento es <strong>no significativa</strong> (r = 0.073, p = 0.395). El K-means (k = 4) identifica 4 grupos funcionales, pero el KW sobre PM10 entre clusters también es no significativo (H = 2.99, p = 0.394): <strong>los clusters de perfil de enfermedad no se alinean con diferencias en exposición a PM10</strong>.</p>
+<p><strong>Limitación:</strong> El proxy de exposición (estación más cercana) introduce error de medición sustancial, y la ausencia de <code>NombreComuna</code> en el parquet impide granularidad territorial fina.</p>
 <hr/>
-<h4 id="P5-%C2%B7-Predicci%C3%B3n-de-d%C3%ADas-de-alto-riesgo-sanitario">P5 · Predicción de días de alto riesgo sanitario<a class="anchor-link" href="#P5-%C2%B7-Predicci%C3%B3n-de-d%C3%ADas-de-alto-riesgo-sanitario">¶</a></h4><p>Sobre 261 semanas (70/30 train/test, clases balanceadas 50/50), ambos modelos superan el baseline aleatorio:</p>
+<h3 id="10.5-P5-%E2%80%94-Predicci%C3%B3n-de-d%C3%ADas-de-alto-riesgo">10.5 P5 — Predicción de días de alto riesgo<a class="anchor-link" href="#10.5-P5-%E2%80%94-Predicci%C3%B3n-de-d%C3%ADas-de-alto-riesgo">¶</a></h3><p>Sobre 261 semanas (70/30 train/test, clases balanceadas 50/50):</p>
 <table>
 <thead>
 <tr>
@@ -10147,19 +10218,16 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 </tr>
 </tbody>
 </table>
-<p>El Árbol de Decisión con mejores hiperparámetros (criterion=gini, max_depth=4, min_samples_leaf=6) es ligeramente inferior y más variable. La Regresión Logística, más estable (±0.039), es el modelo recomendado para este dataset.</p>
-<p>Los coeficientes de la RL y las importancias Gini del DT coinciden en señalar a <strong>NO₂ y O₃</strong> como las variables más informativas para la clasificación. Dado que O₃ tiene un MI alto (efecto no lineal) pero correlación lineal negativa, su inclusión capta la señal de estacionalidad de forma complementaria a NO₂.</p>
-<p><strong>Limitación:</strong> La variable objetivo (semana sobre/bajo la mediana de urgencias) es un proxy de "alto riesgo" basado en la distribución de los propios datos, no en un umbral sanitario externo. Los modelos aprenden en parte la estacionalidad.</p>
+<p>Ambos superan el baseline aleatorio. La Regresión Logística es más estable y recomendada. NO₂ y O₃ son las variables más informativas en ambos modelos. <strong>Limitación:</strong> la variable objetivo refleja la distribución interna de los datos; los modelos capturan en parte la estacionalidad.</p>
 <hr/>
-<h4 id="P6-%C2%B7-Umbrales-normativos-y-efectos-causales-(an%C3%A1lisis-nuevo,-no-presente-en-otros-notebooks)">P6 · Umbrales normativos y efectos causales (análisis nuevo, no presente en otros notebooks)<a class="anchor-link" href="#P6-%C2%B7-Umbrales-normativos-y-efectos-causales-(an%C3%A1lisis-nuevo,-no-presente-en-otros-notebooks)">¶</a></h4><p>Se identificaron días de episodio de contaminación según norma chilena ICA:</p>
-<table>
+<h3 id="10.6-P6-%E2%80%94-Umbrales-normativos-y-efectos-causales-(an%C3%A1lisis-nuevo)">10.6 P6 — Umbrales normativos y efectos causales <em>(análisis nuevo)</em><a class="anchor-link" href="#10.6-P6-%E2%80%94-Umbrales-normativos-y-efectos-causales-(an%C3%A1lisis-nuevo)">¶</a></h3><table>
 <thead>
 <tr>
 <th>Contaminante</th>
 <th>Umbral</th>
 <th>Días episodio</th>
-<th>Media urgencias (episodio)</th>
-<th>Media urgencias (normal)</th>
+<th>Media episodio</th>
+<th>Media normal</th>
 <th>Ratio</th>
 <th>KW H</th>
 <th>p-valor</th>
@@ -10170,8 +10238,8 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 <td>PM10</td>
 <td>&gt; 100 µg/m³</td>
 <td>152</td>
-<td>3,726</td>
-<td>3,207</td>
+<td>3 726</td>
+<td>3 207</td>
 <td>1.16×</td>
 <td>8.07</td>
 <td>0.0045 **</td>
@@ -10180,19 +10248,17 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 <td>PM2.5</td>
 <td>&gt; 37.5 µg/m³</td>
 <td>277</td>
-<td>3,707</td>
-<td>3,156</td>
+<td>3 707</td>
+<td>3 156</td>
 <td>1.17×</td>
 <td>8.54</td>
 <td>0.0035 **</td>
 </tr>
 </tbody>
 </table>
-<p>En ambos casos, los días de episodio de contaminación presentan <strong>~16–17% más urgencias respiratorias</strong> que los días normales, diferencia estadísticamente significativa (p &lt; 0.01).</p>
-<p>El <strong>Regression Discontinuity Design (RDD)</strong> muestra un salto positivo estimado en el umbral en ambos contaminantes, consistente con la hipótesis de efecto causal. Sin embargo, la interpretación causal requiere cautela: la confusión por temperatura y estacionalidad (invierno concentra tanto episodios de PM como urgencias) no está controlada en este análisis exploratorio. Un diseño robusto requeriría controles meteorológicos y ancho de banda óptimo (ej. estimador Calonico-Cattaneo-Titiunik).</p>
+<p>Los días de episodio presentan <strong>~16–17% más urgencias respiratorias</strong> (p &lt; 0.01). El RDD muestra un salto positivo en ambos umbrales, consistente con un efecto causal. Sin embargo, la confusión por temperatura/estacionalidad no está controlada; un diseño robusto requeriría controles meteorológicos y ancho de banda óptimo (Calonico-Cattaneo-Titiunik).</p>
 <hr/>
-<h3 id="Verificaci%C3%B3n-de-coherencia-con-otros-notebooks">Verificación de coherencia con otros notebooks<a class="anchor-link" href="#Verificaci%C3%B3n-de-coherencia-con-otros-notebooks">¶</a></h3><p>Los resultados de este notebook son <strong>coherentes</strong> con los hallazgos de <code>exploration_optimized.ipynb</code> y <code>analysis_optimized.ipynb</code>, y complementan el <code>EDA Respiratorio.ipynb</code>. Los puntos de verificación son:</p>
-<table>
+<h3 id="10.7-Coherencia-con-otros-notebooks">10.7 Coherencia con otros notebooks<a class="anchor-link" href="#10.7-Coherencia-con-otros-notebooks">¶</a></h3><table>
 <thead>
 <tr>
 <th>Aspecto</th>
@@ -10205,25 +10271,25 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 <tr>
 <td>Dominancia invernal de urgencias</td>
 <td>✓ KW H = 110.59, p &lt; 10⁻²³</td>
-<td>✓ Confirmado en EDA respiratorio y exploration</td>
+<td>✓ EDA respiratorio y exploration</td>
 <td><strong>Coherente</strong></td>
 </tr>
 <tr>
 <td>PM10–PM2.5 alta colinealidad</td>
 <td>✓ r = 0.805</td>
-<td>✓ Visible en matrices de correlación de exploration</td>
+<td>✓ Matrices de correlación en exploration</td>
 <td><strong>Coherente</strong></td>
 </tr>
 <tr>
 <td>PCA: PC1 combustión, PC2 fotoquímico</td>
-<td>✓ Estructura idéntica</td>
-<td>✓ analysis_optimized obtiene la misma estructura PCA</td>
+<td>✓ Misma estructura</td>
+<td>✓ analysis_optimized</td>
 <td><strong>Coherente</strong></td>
 </tr>
 <tr>
-<td>NO₂ como predictor más robusto (lag)</td>
-<td>✓ mejor lag 2w r = +0.273</td>
-<td>✓ NO₂ aparece como top feature en modelos de analysis</td>
+<td>NO₂ predictor rezagado más robusto</td>
+<td>✓ lag 2w r = +0.273</td>
+<td>✓ Top feature en modelos de analysis</td>
 <td><strong>Coherente</strong></td>
 </tr>
 <tr>
@@ -10233,7 +10299,7 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 <td><strong>Coherente</strong></td>
 </tr>
 <tr>
-<td>P3 lagged cross-correlation</td>
+<td>P3 correlación cruzada rezagada</td>
 <td>✓ Análisis completo</td>
 <td>✗ No presente en otros notebooks</td>
 <td><strong>Nuevo</strong></td>
@@ -10246,21 +10312,14 @@ Para estimación causal robusta se recomienda incluir controles meteorológicos 
 </tr>
 </tbody>
 </table>
-<p>No se detectaron contradicciones entre notebooks. Las diferencias son de granularidad y enfoque, no de resultados.</p>
 <hr/>
-<h3 id="Conclusiones-generales">Conclusiones generales<a class="anchor-link" href="#Conclusiones-generales">¶</a></h3><ol>
-<li><p><strong>Existe asociación significativa</strong> entre contaminantes atmosféricos y urgencias respiratorias en la RM, particularmente con NO₂ (r = +0.268 a lag 0, r = +0.273 a lag 2 semanas) y SO₂ (r = +0.158 a lag 0). La asociación es principalmente <strong>estacional</strong>.</p>
-</li>
-<li><p><strong>Los contaminantes con mayor impacto relativo no lineal</strong> son O₃ y SO₂ (según Mutual Information), aunque sus efectos lineales directos son débiles o negativos. PM10 tiene bajo MI, pero sigue siendo relevante en análisis de episodios.</p>
-</li>
-<li><p><strong>El efecto rezagado más claro</strong> es de 2–3 semanas para NO₂ y PM10/PM2.5, consistente con la fisiopatología de las enfermedades respiratorias agudas.</p>
-</li>
-<li><p><strong>No se detectó un patrón espacial robusto</strong> entre PM10 y tasa de urgencias por establecimiento con los datos disponibles. La falta de granularidad comunal limita este análisis.</p>
-</li>
-<li><p><strong>Los modelos ML predicen días de alto riesgo</strong> con F1 ≈ 0.71, superando el baseline, pero parte de la señal captura la estacionalidad más que el efecto causal de contaminantes.</p>
-</li>
-<li><p><strong>Los días de episodio de contaminación</strong> (PM10 &gt; 100 µg/m³ o PM2.5 &gt; 37.5 µg/m³) presentan ~16–17% más urgencias respiratorias, con diferencia estadísticamente significativa (p &lt; 0.01), lo que es <strong>consistente con un efecto causal</strong>, aunque un diseño cuasi-experimental más robusto requeriría controlar temperatura y estacionalidad.</p>
-</li>
+<h3 id="10.8-Conclusiones-generales">10.8 Conclusiones generales<a class="anchor-link" href="#10.8-Conclusiones-generales">¶</a></h3><ol>
+<li><strong>Existe asociación significativa</strong> entre contaminantes y urgencias respiratorias, especialmente con NO₂ (r = +0.268 lag 0, +0.273 lag 2w) y SO₂ (r = +0.158). La asociación es principalmente estacional.</li>
+<li><strong>Los contaminantes con mayor impacto no lineal</strong> son O₃ y SO₂ (MI más alto), aunque sus efectos lineales son débiles. PM10 tiene bajo MI pero es relevante en análisis de episodios.</li>
+<li><strong>El efecto rezagado más claro</strong> es de 2–3 semanas para NO₂ y PM10/PM2.5, coherente con la fisiopatología de las enfermedades respiratorias agudas.</li>
+<li><strong>No se detectó patrón espacial robusto</strong> entre PM10 y tasa de urgencias por establecimiento; la falta de granularidad comunal limita este análisis.</li>
+<li><strong>Los modelos ML predicen días de alto riesgo</strong> con F1 ≈ 0.71, superando el baseline, pero capturan en parte la estacionalidad.</li>
+<li><strong>Los días de episodio</strong> (PM10 &gt; 100 µg/m³ o PM2.5 &gt; 37.5 µg/m³) presentan ~16–17% más urgencias (p &lt; 0.01), consistente con un efecto causal que requiere controles meteorológicos para confirmarse.</li>
 </ol>
 </div>
 </div>
