@@ -54,7 +54,7 @@ invalidación es manual: borra el `.parquet` si cambian los datos o el filtrado.
 | `exploration_optimized.ipynb` | EDA y carga de cachés — ejecutar primero |
 | `analysis_optimized.ipynb` | Modelado (`%run exploration_optimized.ipynb` al inicio) |
 | `analisis_preguntas_investigacion.ipynb` | Flujo único estructurado por las 6 preguntas de investigación, con teoría de cada técnica |
-| `EDA Respiratorio.ipynb` / `EDA_Respiratorio_update.ipynb` | EDA respiratorio complementario |
+| `EDA Respiratorio.ipynb` / `EDA_Respiratorio_update.ipynb` | EDA respiratorio hito 1 |
 
 ```bash
 source env/bin/activate && jupyter lab   # o ./run_env.sh
