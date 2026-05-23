@@ -8170,7 +8170,7 @@ selección de variables y reducción de dimensión</strong> en lugar de interpre
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 id="2.5-Distribuci%C3%B3n-espacial-por-comuna">2.5 Distribución espacial por comuna<a class="anchor-link" href="#2.5-Distribuci%C3%B3n-espacial-por-comuna">¶</a></h3><blockquote>
-<p>⚠️ <strong>Volúmenes absolutos, no incidencia.</strong> El choropleth muestra el <strong>número total de
+<p><strong>Volúmenes absolutos, no incidencia.</strong> El choropleth muestra el <strong>número total de
 atenciones</strong>, no una tasa por habitante. Las comunas que aparecen más oscuras son, en gran
 medida, las que <strong>concentran población y los grandes hospitales de referencia</strong> (Santiago,
 Maipú, Puente Alto), no necesariamente las más expuestas a contaminación. La normalización por
@@ -8638,7 +8638,7 @@ CV → test (0.71 → 0.59 en la lineal) refleja el optimismo propio de n = 261.
 variables más informativas, coherente con el ranking de MI (la hipótesis de P1 acertó en NO₂, pero el
 segundo predictor fue <strong>O₃, no el material particulado</strong>).</p>
 <blockquote>
-<h4 id="%E2%9A%A0%EF%B8%8F-Confusi%C3%B3n-temporal-del-target-(hallazgo-cr%C3%ADtico)">⚠️ Confusión temporal del <em>target</em> (hallazgo crítico)<a class="anchor-link" href="#%E2%9A%A0%EF%B8%8F-Confusi%C3%B3n-temporal-del-target-(hallazgo-cr%C3%ADtico)">¶</a></h4><p>El <em>target</em> «alto riesgo» = semana sobre la <strong>mediana 2020–2024</strong> queda dominado por el cambio de
+<h4 id="Confusi%C3%B3n-temporal-del-target-(hallazgo-cr%C3%ADtico)">Confusión temporal del <em>target</em> (hallazgo crítico)<a class="anchor-link" href="#Confusi%C3%B3n-temporal-del-target-(hallazgo-cr%C3%ADtico)">¶</a></h4><p>El <em>target</em> «alto riesgo» = semana sobre la <strong>mediana 2020–2024</strong> queda dominado por el cambio de
 régimen documentado en §2.2: casi todas las semanas de 2020–2021 caen bajo la mediana y casi todas
 las de 2022–2024 sobre ella.</p>
 <p>| Año | Semanas «Bajo» | Semanas «Alto» |
@@ -8732,7 +8732,7 @@ normativos) para acercarse a una lectura causal.</li>
 <li>Toda la carga y el cacheo Parquet de los datasets viven en <code>exploration_optimized.ipynb</code>, ejecutado
 al inicio mediante <code>%run</code>. El análisis completo de las 6 preguntas (incluye P2 y los diseños
 causales) está en <code>analisis_preguntas_investigacion.ipynb</code>.</li>
-<li>Para exportar este informe a HTML <strong>con el código colapsado</strong> (recomendado para la entrega):<div class="highlight"><pre><span></span>jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--to<span class="w"> </span>html<span class="w"> </span>--no-input<span class="w"> </span>informe_hito1.ipynb<span class="w">     </span><span class="c1"># oculta todo el código</span>
+<li>Para exportar este informe a HTML <strong>con el código colapsado</strong>:<div class="highlight"><pre><span></span>jupyter<span class="w"> </span>nbconvert<span class="w"> </span>--to<span class="w"> </span>html<span class="w"> </span>--no-input<span class="w"> </span>informe_hito1.ipynb<span class="w">     </span><span class="c1"># oculta todo el código</span>
 <span class="c1"># o conservando el código (anexos): jupyter nbconvert --to html informe_hito1.ipynb</span>
 </pre></div>
 </li>
